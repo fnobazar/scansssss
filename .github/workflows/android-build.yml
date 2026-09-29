@@ -1,0 +1,47 @@
+name: Sca-N Android Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Create Android platform files
+        working-directory: flutter_app
+        run: flutter create --platforms=android .
+
+      - name: Get dependencies
+        working-directory: flutter_app
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: flutter_app
+        run: flutter analyze
+
+      - name: Build debug APK
+        working-directory: flutter_app
+        run: flutter build apk --debug --dart-define=SUPABASE_URL=https://placeholder.invalid --dart-define=SUPABASE_PUBLISHABLE_KEY=build-verification-placeholder
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sca-n-debug-apk
+          path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
