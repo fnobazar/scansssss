@@ -24,5 +24,5 @@ async def get_current_user(
             detail="Invalid authentication token",
         )
 
-    # Supabase JWT verification will be connected here.
+    # Real Supabase JWT verification will be connected in Step 47.
     return token
