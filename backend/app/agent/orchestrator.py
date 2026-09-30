@@ -73,7 +73,17 @@ class AgentOrchestrator:
         result = result_builder.build(
             title="Sca-N",
             description=response.output_text,
-            result_type="general",
+           result_type=(
+    "product"
+    if intent == "product"
+    else "place"
+    if intent == "place"
+    else "document"
+    if intent == "document"
+    else "palm"
+    if intent == "palm"
+    else "general"
+),
             confidence=None,
             sections=[],
             actions=["ask_more", "save"],
