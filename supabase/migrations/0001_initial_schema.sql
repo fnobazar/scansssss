@@ -144,3 +144,14 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row
 execute procedure public.handle_new_user();
+create index if not exists idx_discoveries_user_id
+on public.discoveries(user_id);
+
+create index if not exists idx_discoveries_created_at
+on public.discoveries(created_at desc);
+
+create index if not exists idx_saved_items_user_id
+on public.saved_items(user_id);
+
+create index if not exists idx_saved_items_discovery_id
+on public.saved_items(discovery_id);
