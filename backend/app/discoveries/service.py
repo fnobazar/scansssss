@@ -1,19 +1,25 @@
-from typing import Any
+from fastapi import APIRouter, Depends
+
+from app.discoveries.service import discoveries_service
+from app.security.auth import get_current_user
 
 
-class DiscoveriesService:
-    async def list(self, user_id: str) -> dict[str, Any]:
-        return {
-            "user_id": user_id,
-            "discoveries": [],
-        }
-
-    async def get(self, user_id: str, discovery_id: str) -> dict[str, Any]:
-        return {
-            "user_id": user_id,
-            "discovery_id": discovery_id,
-            "discovery": None,
-        }
+router = APIRouter(prefix="/discoveries", tags=["discoveries"])
 
 
-discoveries_service = DiscoveriesService()
+@router.get("")
+async def list_discoveries(
+    user_id: str = Depends(get_current_user),
+):
+    return await discoveries_service.list(user_id)
+
+
+@router.get("/{discovery_id}")
+async def get_discovery(
+    discovery_id: str,
+    user_id: str = Depends(get_current_user),
+):
+    return await discoveries_service.get(
+        user_id,
+        discovery_id,
+    )
