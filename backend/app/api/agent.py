@@ -1,19 +1,25 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import FastAPI
 
-from app.agent.orchestrator import agent
+from app.api.agent import router as agent_router
 
-router = APIRouter(prefix="/agent", tags=["agent"])
+app = FastAPI(
+    title="Sca-N API",
+    description="Scan, Understand, Research, Ask, Save",
+    version="0.1.0",
+)
+
+app.include_router(agent_router, prefix="/v1")
 
 
-class AgentRequest(BaseModel):
-    user_input: str
-    context: dict = {}
+@app.get("/")
+def root():
+    return {
+        "app": "Sca-N",
+        "status": "running",
+        "message": "Sca-N backend is ready",
+    }
 
 
-@router.post("/run")
-async def run_agent(request: AgentRequest):
-    return await agent.run(
-        user_input=request.user_input,
-        context=request.context,
-    )
+@app.get("/health")
+def health():
+    return {"status": "ok"}
