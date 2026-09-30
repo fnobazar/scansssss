@@ -1,12 +1,18 @@
 from typing import Any
 
-from app.database.repository import database_repository
+from app.database.repository import DatabaseRepository
 
 
 class DiscoveriesService:
 
-    async def list(self, user_id: str) -> dict[str, Any]:
-        discoveries = await database_repository.get_discoveries(
+    async def list(
+        self,
+        user_id: str,
+        access_token: str,
+    ) -> dict[str, Any]:
+        repository = DatabaseRepository(access_token)
+
+        discoveries = await repository.get_discoveries(
             user_id
         )
 
@@ -19,9 +25,11 @@ class DiscoveriesService:
         self,
         user_id: str,
         discovery_id: str,
+        access_token: str,
     ) -> dict[str, Any]:
+        repository = DatabaseRepository(access_token)
 
-        discoveries = await database_repository.get_discoveries(
+        discoveries = await repository.get_discoveries(
             user_id
         )
 
@@ -42,4 +50,3 @@ class DiscoveriesService:
 
 
 discoveries_service = DiscoveriesService()
-    )
