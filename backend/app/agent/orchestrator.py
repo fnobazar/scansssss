@@ -1,3 +1,5 @@
+from app.ai.client import get_openai_client
+from app.agent.result_builder import result_builder
 def detect_intent(
     self,
     context: dict[str, Any],
