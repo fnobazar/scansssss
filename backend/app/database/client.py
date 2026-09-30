@@ -1,6 +1,6 @@
 import os
 
-from supabase import create_client, Client
+from supabase import Client, create_client
 
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
@@ -10,13 +10,20 @@ SUPABASE_PUBLISHABLE_KEY = os.getenv(
 )
 
 
-def get_supabase_client() -> Client:
+def get_supabase_client(
+    access_token: str | None = None,
+) -> Client:
     if not SUPABASE_URL or not SUPABASE_PUBLISHABLE_KEY:
         raise RuntimeError(
             "Supabase configuration is missing."
         )
 
-    return create_client(
+    client = create_client(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY,
     )
+
+    if access_token:
+        client.postgrest.auth(access_token)
+
+    return client
